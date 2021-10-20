@@ -2,4 +2,5 @@ pip
 setuptools
 chainer
 pillow
-tensorflow-gpu
+tensorflow-gpu==1.15
+cupy-cuda110>=7.7.0,<8.0.0

@@ -2,4 +2,4 @@ pip
 setuptools
 chainer
 pillow
-tensorflow
+tensorflow==1.15
