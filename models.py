@@ -101,6 +101,9 @@ def style_matrix(y):
 
 class Generator:
   def __init__(self, base_model, img_orig, img_style, config):
+    self.orig = img_orig
+    self.config = config
+
     # 特徴抽出を行う
     mids_orig = base_model(img_orig)
     mids_style = base_model(img_style)
@@ -149,7 +152,7 @@ class Generator:
       # 学習開始
       for i in range(config.iteration):
         sess.run([self.total_train, self.clip])
-        if (i + 1) % 50 == 0:
+        if (i + 1) % 1000 == 0:
           l, l1, l2 = sess.run([self.total_loss, self.loss_orig, self.loss_style])
           print("%d| loss: %f, loss_orig: %f, loss_style: %f" % (i + 1, l, sum(l1), sum(l2)))
           for l1_, l2_ in zip(l1, l2):
@@ -158,7 +161,42 @@ class Generator:
 
   def save_image(self, sess, path):
     data = sess.run(self.img_gen)[0]
+    # print(orig[0])
+    orig = self.orig
+    orig = tf.cast(orig[0], np.float32)
+    orig = orig.eval()
+    orig = orig[..., ::-1] + 120
+    orig = orig.clip(0, 255)
+    # print(orig.shape)
     data = transform_from_train(data)
-    img = Image.fromarray(data.astype(np.uint8))
+    data = tf.cast(data, np.float32)
+    data = data.eval()
+    diff = 0.
+    count = 0
+    array = [[0 for i in range(orig[0].shape[0])] for j in range(orig.shape[0])]
+    for i in range(0, orig.shape[0], 1):
+      for j in range(0, orig[0].shape[0], 1):
+        tmp = (orig[i][j][0] - 120.).astype(np.uint8)
+        r = data[i][j][0] / 255.
+        g = data[i][j][1] / 255.
+        b = data[i][j][2] / 255.
+        rgb = (r + g + b) / 3.
+        o_rgb = (orig[i][j][0] + orig[i][j][1] + orig[i][j][2]) / 255. / 3.
+        rate = rgb * (1. - self.config.lam)  + o_rgb * self.config.lam
+        diff += o_rgb - rate
+        count += 1
+        array[i][j] = rate
+    rate2 = diff / count
+    for i in range(0, orig.shape[0], 1):
+      for j in range(0, orig[0].shape[0], 1):
+        # orig[i][j][0] = orig[i][j][0] * (array[i][j] + rate2)
+        # orig[i][j][1] = orig[i][j][1] * (array[i][j] + rate2)
+        # orig[i][j][2] = orig[i][j][2] * (array[i][j] + rate2)
+        orig[i][j][0] = orig[i][j][0] * (array[i][j])
+        orig[i][j][1] = orig[i][j][1] * (array[i][j])
+        orig[i][j][2] = orig[i][j][2] * (array[i][j])
+      orig[i] = orig[i].clip(0, 255)
+    # print(orig)
+    img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
     img.save(path)
