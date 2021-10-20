@@ -181,22 +181,15 @@ class Generator:
         g = data[i][j][1] / 255.
         b = data[i][j][2] / 255.
         rgb = (r + g + b) / 3.
-        o_rgb = (orig[i][j][0] + orig[i][j][1] + orig[i][j][2]) / 255. / 3.
-        rate = rgb * (1. - self.config.lam)  + o_rgb * self.config.lam
-        diff += o_rgb - rate
-        count += 1
-        array[i][j] = rate
-    rate2 = diff / count
-    for i in range(0, orig.shape[0], 1):
-      for j in range(0, orig[0].shape[0], 1):
-        # orig[i][j][0] = orig[i][j][0] * (array[i][j] + rate2)
-        # orig[i][j][1] = orig[i][j][1] * (array[i][j] + rate2)
-        # orig[i][j][2] = orig[i][j][2] * (array[i][j] + rate2)
-        orig[i][j][0] = orig[i][j][0] * (array[i][j])
-        orig[i][j][1] = orig[i][j][1] * (array[i][j])
-        orig[i][j][2] = orig[i][j][2] * (array[i][j])
+        o_r = orig[i][j][0] / 255.
+        o_g = orig[i][j][1] / 255.
+        o_b = orig[i][j][2] / 255.
+        o_rgb = (o_r + o_g + o_b) / 3.
+        rate = rgb * (1. - self.config.lam)
+        orig[i][j][0] = orig[i][j][0] * (rate + o_r * self.config.lam)
+        orig[i][j][1] = orig[i][j][1] * (rate + o_g * self.config.lam)
+        orig[i][j][2] = orig[i][j][2] * (rate + o_b * self.config.lam)
       orig[i] = orig[i].clip(0, 255)
-    # print(orig)
     img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
     img.save(path)
