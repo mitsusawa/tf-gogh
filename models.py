@@ -171,12 +171,14 @@ class Generator:
     data = transform_from_train(data)
     data = tf.cast(data, np.float32)
     data = data.eval()
-    diff = 0.
-    count = 0
-    array = [[0 for i in range(orig[0].shape[0])] for j in range(orig.shape[0])]
+    rDiff = 0.
+    gDiff = 0.
+    bDiff = 0.
+    # diff = 0.
+    # array = [[0 for i in range(orig[0].shape[0])] for j in range(orig.shape[0])]
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
-        tmp = (orig[i][j][0] - 120.).astype(np.uint8)
+        # tmp = (orig[i][j][0] - 120.).astype(np.uint8)
         r = data[i][j][0] / 255.
         g = data[i][j][1] / 255.
         b = data[i][j][2] / 255.
@@ -184,12 +186,26 @@ class Generator:
         o_r = orig[i][j][0] / 255.
         o_g = orig[i][j][1] / 255.
         o_b = orig[i][j][2] / 255.
-        o_rgb = (o_r + o_g + o_b) / 3.
+        # o_rgb = (o_r + o_g + o_b) / 3.
         rate = rgb * (1. - self.config.lam)
         orig[i][j][0] = orig[i][j][0] * (rate + o_r * self.config.lam)
         orig[i][j][1] = orig[i][j][1] * (rate + o_g * self.config.lam)
         orig[i][j][2] = orig[i][j][2] * (rate + o_b * self.config.lam)
+        rDiff += o_r - rgb
+        gDiff += o_g - rgb
+        bDiff += o_b - rgb
       orig[i] = orig[i].clip(0, 255)
+    # rDiff /= orig.shape[0] * orig[0].shape[0]
+    # gDiff /= orig.shape[0] * orig[0].shape[0]
+    # bDiff /= orig.shape[0] * orig[0].shape[0]
+    diff = (rDiff + gDiff + bDiff) / 3.
+    diff /= orig.shape[0] * orig[0].shape[0]
+    diff *= 255.
+    for i in range(0, orig.shape[0], 1):
+      for j in range(0, orig[0].shape[0], 1):
+        orig[i][j][0] += diff
+        orig[i][j][1] += diff
+        orig[i][j][2] += diff
     img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
     img.save(path)
