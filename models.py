@@ -200,12 +200,13 @@ class Generator:
     # bDiff /= orig.shape[0] * orig[0].shape[0]
     diff = (rDiff + gDiff + bDiff) / 3.
     diff /= orig.shape[0] * orig[0].shape[0]
-    diff *= 255.
+    # diff *= 255.
+    diff += 1.
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
-        orig[i][j][0] += diff
-        orig[i][j][1] += diff
-        orig[i][j][2] += diff
+        orig[i][j][0] *= diff
+        orig[i][j][1] *= diff
+        orig[i][j][2] *= diff
     img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
     img.save(path)
