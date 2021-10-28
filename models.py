@@ -197,7 +197,7 @@ class Generator:
         # orig[i][j][1] = orig[i][j][1] * (rate + self.config.lam)
         # orig[i][j][2] = orig[i][j][2] * (rate + self.config.lam)
         v2 = max(orig[i][j][0] * array[i][j], max(orig[i][j][1] * array[i][j], orig[i][j][2] * array[i][j])) / 255.
-        v3 += v1 - v2,
+        v3 += v1 - v2
         # orig[i][j][0] *= v3
         # orig[i][j][1] *= v3
         # orig[i][j][2] *= v3
