@@ -215,9 +215,9 @@ class Generator:
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
         sum = (0. + orig[i][j][0] + orig[i][j][1] + orig[i][j][2]) / 255.
-        orig[i][j][0] = orig[i][j][0] * (v3 + array[i][j] * (orig[i][j][0] / 255. / sum * 3. / 4. + 0.75))
-        orig[i][j][1] = orig[i][j][1] * (v3 + array[i][j] * (orig[i][j][1] / 255. / sum * 3. / 4. + 0.75))
-        orig[i][j][2] = orig[i][j][2] * (v3 + array[i][j] * (orig[i][j][2] / 255. / sum * 3. / 4. + 0.75))
+        orig[i][j][0] = orig[i][j][0] * (v3 + array[i][j])
+        orig[i][j][1] = orig[i][j][1] * (v3 + array[i][j])
+        orig[i][j][2] = orig[i][j][2] * (v3 + array[i][j])
       orig[i] = orig[i].clip(0, 255)
     img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
