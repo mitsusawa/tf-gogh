@@ -175,8 +175,8 @@ class Generator:
     gDiff = 0.
     bDiff = 0.
     v1 = 0.
-    # v2 = 0.
-    # v3 = 0.
+    v2 = 0.
+    v3 = 0.
     # diff = 0.
     array = [[0 for i in range(orig[0].shape[0])] for j in range(orig.shape[0])]
     for i in range(0, orig.shape[0], 1):
@@ -189,19 +189,19 @@ class Generator:
         o_r = orig[i][j][0] / 255.
         o_g = orig[i][j][1] / 255.
         o_b = orig[i][j][2] / 255.
-        v1 += max(o_r, max(o_g, o_b))
+        v1 = max(o_r, max(o_g, o_b))
         # o_rgb = (o_r + o_g + o_b) / 3.
         rate = rgb * (1. - self.config.lam)
         array[i][j] = rate + self.config.lam
         # orig[i][j][0] = orig[i][j][0] * (rate + self.config.lam)
         # orig[i][j][1] = orig[i][j][1] * (rate + self.config.lam)
         # orig[i][j][2] = orig[i][j][2] * (rate + self.config.lam)
-        # v2 = max(orig[i][j][0] * array[i][j], max(orig[i][j][1] * array[i][j], orig[i][j][2] * array[i][j])) / 255.
-        # v3 += v1 - v2
+        v2 = max(orig[i][j][0] * array[i][j], max(orig[i][j][1] * array[i][j], orig[i][j][2] * array[i][j])) / 255.
+        v3 += v1 - v2
         # orig[i][j][0] *= v3
         # orig[i][j][1] *= v3
         # orig[i][j][2] *= v3
-      # orig[i] = orig[i].clip(0, 255)
+      orig[i] = orig[i].clip(0, 255)
     # rDiff /= orig.shape[0] * orig[0].shape[0]
     # gDiff /= orig.shape[0] * orig[0].shape[0]
     # bDiff /= orig.shape[0] * orig[0].shape[0]
@@ -210,15 +210,14 @@ class Generator:
     # diff *= (1. - self.config.lam)
     # diff *= 255.
     # diff += 1.
-    v1 /= orig.shape[0] * orig[0].shape[0]
-    # v3 /= orig.shape[0] * orig[0].shape[0]
+    v3 /= orig.shape[0] * orig[0].shape[0]
     # v3 += 1.
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
         sum = (0. + orig[i][j][0] + orig[i][j][1] + orig[i][j][2]) / 255.
-        orig[i][j][0] = orig[i][j][0] * (array[i][j] / v1)
-        orig[i][j][1] = orig[i][j][1] * (array[i][j] / v1)
-        orig[i][j][2] = orig[i][j][2] * (array[i][j] / v1)
+        orig[i][j][0] = orig[i][j][0] * (v3 + array[i][j])
+        orig[i][j][1] = orig[i][j][1] * (v3 + array[i][j])
+        orig[i][j][2] = orig[i][j][2] * (v3 + array[i][j])
       orig[i] = orig[i].clip(0, 255)
     img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
