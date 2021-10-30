@@ -191,8 +191,8 @@ class Generator:
         o_b = orig[i][j][2] / 255.
         v1 = max(o_r, max(o_g, o_b))
         # o_rgb = (o_r + o_g + o_b) / 3.
-        rate = rgb * (1. - self.config.lam)
-        array[i][j] = rate + self.config.lam
+        rate = rgb * (1. - self.config.mix)
+        array[i][j] = rate + self.config.mix
         # orig[i][j][0] = orig[i][j][0] * (rate + self.config.lam)
         # orig[i][j][1] = orig[i][j][1] * (rate + self.config.lam)
         # orig[i][j][2] = orig[i][j][2] * (rate + self.config.lam)
