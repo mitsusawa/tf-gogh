@@ -201,7 +201,7 @@ class Generator:
         # orig[i][j][0] *= v3
         # orig[i][j][1] *= v3
         # orig[i][j][2] *= v3
-      orig[i] = orig[i].clip(0, 255)
+      # orig[i] = orig[i].clip(0, 255)
     # rDiff /= orig.shape[0] * orig[0].shape[0]
     # gDiff /= orig.shape[0] * orig[0].shape[0]
     # bDiff /= orig.shape[0] * orig[0].shape[0]
