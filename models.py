@@ -212,6 +212,7 @@ class Generator:
     # diff += 1.
     v3 /= orig.shape[0] * orig[0].shape[0]
     # v3 += 1.
+    v3 *= self.config.brightness
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
         sum = (0. + orig[i][j][0] + orig[i][j][1] + orig[i][j][2]) / 255.

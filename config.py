@@ -14,6 +14,7 @@ def parse_args():
   parser.add_argument('--lr', type=float, help="学習レート")
   parser.add_argument('--lam', type=float, help="入力と画風のバランス")
   parser.add_argument('--mix', type=float, help="合成のバランス")
+  parser.add_argument('--brightness', type=float, help="明るさのバランス")
   parser.add_argument('--width', type=int, help="生成画像の横幅")
   parser.add_argument('--height', type=int, help="生成画像の高さ")
   parser.add_argument('--no_resize_style', action='store_true', help="画風画像をリサイズせずに使う")
@@ -28,6 +29,7 @@ class Config:
   lr = 1.0
   lam = 0.05
   mix = 0.05
+  brightness = 0.5
   width = 300
   height = 300
   output_shape = [batch_size, height, width, 3]
@@ -45,7 +47,7 @@ class Config:
     self.iteration = args.iteration or self.iteration
     self.lr = args.lr or self.lr
     self.lam = args.lam or self.lam
-    self.mix = args.mix or self.mix
+    self.brightness = args.brightness or self.brightness
     self.width = args.width or self.width
     self.height = args.height or self.height
     self.output_shape = [self.batch_size, self.height, self.width, 3]
