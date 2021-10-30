@@ -45,6 +45,7 @@ class Config:
     self.iteration = args.iteration or self.iteration
     self.lr = args.lr or self.lr
     self.lam = args.lam or self.lam
+    self.mix = args.mix or self.mix
     self.width = args.width or self.width
     self.height = args.height or self.height
     self.output_shape = [self.batch_size, self.height, self.width, 3]
