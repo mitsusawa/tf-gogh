@@ -182,22 +182,22 @@ class Generator:
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
         # tmp = (orig[i][j][0] - 120.).astype(np.uint8)
-        r = data[i][j][0] / 255.
-        g = data[i][j][1] / 255.
-        b = data[i][j][2] / 255.
-        rgb = (r + g + b) / 3.
-        o_r = orig[i][j][0] / 255.
-        o_g = orig[i][j][1] / 255.
-        o_b = orig[i][j][2] / 255.
-        v1 = max(o_r, max(o_g, o_b))
+        r = data[i][j][0] / 255. * 0.299
+        g = data[i][j][1] / 255. * 0.587
+        b = data[i][j][2] / 255. * 0.114
+        rgb = r + g + b
+        o_r = orig[i][j][0] / 255. * 0.299
+        o_g = orig[i][j][1] / 255. * 0.587
+        o_b = orig[i][j][2] / 255. * 0.114
+        v1 =  o_r + o_g + o_b
         # o_rgb = (o_r + o_g + o_b) / 3.
         rate = rgb * (1. - self.config.mix)
         array[i][j] = rate + self.config.mix
         # orig[i][j][0] = orig[i][j][0] * (rate + self.config.lam)
         # orig[i][j][1] = orig[i][j][1] * (rate + self.config.lam)
         # orig[i][j][2] = orig[i][j][2] * (rate + self.config.lam)
-        v2 = max(orig[i][j][0] * array[i][j], max(orig[i][j][1] * array[i][j], orig[i][j][2] * array[i][j])) / 255.
-        v3 += v1 - v2
+        v2 = (orig[i][j][0] * array[i][j] * 0.299 + orig[i][j][1] * array[i][j] * 0.587 + orig[i][j][2] * array[i][j] * 0.114) / 255.
+        v3 += abs(v1 - v2)
         # orig[i][j][0] *= v3
         # orig[i][j][1] *= v3
         # orig[i][j][2] *= v3
@@ -212,7 +212,8 @@ class Generator:
     # diff += 1.
     v3 /= orig.shape[0] * orig[0].shape[0]
     # v3 += 1.
-    v3 *= self.config.brightness * (1. - self.config.mix)
+    v3 *= self.config.brightness
+    # print(v3)
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
         o_r = orig[i][j][0] / 255.
