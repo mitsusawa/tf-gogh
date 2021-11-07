@@ -197,7 +197,7 @@ class Generator:
         # orig[i][j][1] = orig[i][j][1] * (rate + self.config.lam)
         # orig[i][j][2] = orig[i][j][2] * (rate + self.config.lam)
         v2 = (orig[i][j][0] * array[i][j] * 0.299 + orig[i][j][1] * array[i][j] * 0.587 + orig[i][j][2] * array[i][j] * 0.114) / 255.
-        v3 += abs(v1 - v2)
+        v3 += v1 - v2
         # orig[i][j][0] *= v3
         # orig[i][j][1] *= v3
         # orig[i][j][2] *= v3
@@ -213,6 +213,7 @@ class Generator:
     v3 /= orig.shape[0] * orig[0].shape[0]
     # v3 += 1.
     v3 *= self.config.brightness
+    v3 = abs(v3)
     # print(v3)
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):

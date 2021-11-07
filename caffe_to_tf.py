@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
-from chainer.functions import caffe
+from chainer.links import caffe
+from tensorflow.keras.mixed_precision import experimental as mixed_precision
 
 
 class Conv:
@@ -11,6 +12,7 @@ class Conv:
     self.b = tf.constant(b)
 
   def __call__(self, x, stride=1, activation_fn=tf.nn.relu, padding="SAME"):
+    policy = mixed_precision.Policy('mixed_float16')
     y = tf.nn.conv2d(x, self.W, strides=[1, stride, stride, 1], padding=padding) + self.b
     return activation_fn(y) if activation_fn else y
 

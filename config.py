@@ -29,9 +29,9 @@ class Config:
   lr = 1.0
   lam = 0.05
   mix = 0.05
-  brightness = 0.5
-  width = 300
-  height = 300
+  brightness = 1.
+  width = 512
+  height = 512
   output_shape = [batch_size, height, width, 3]
   output_dir = "_output"
   # model = "nin"
