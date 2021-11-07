@@ -212,7 +212,7 @@ class Generator:
     # diff += 1.
     v3 /= orig.shape[0] * orig[0].shape[0]
     # v3 += 1.
-    v3 *= self.config.brightness
+    v3 *= self.config.brightness * (1. - self.config.mix)
     for i in range(0, orig.shape[0], 1):
       for j in range(0, orig[0].shape[0], 1):
         o_r = orig[i][j][0] / 255.
@@ -228,14 +228,14 @@ class Generator:
         s3 = (max(o_r, max(o_g, o_b)) - min(o_r, min(o_g, o_b))) / max(o_r, max(o_g, o_b))
         s4 = s2 / s3
         if o_r > o_g and o_r > o_b:
-          orig[i][j][1] /= s4
-          orig[i][j][2] /= s4
+          orig[i][j][1] *= s4
+          orig[i][j][2] *= s4
         elif o_g > o_r and o_g > o_b:
-          orig[i][j][0] /= s4
-          orig[i][j][2] /= s4
+          orig[i][j][0] *= s4
+          orig[i][j][2] *= s4
         elif o_b > o_r and o_b > o_g:
-          orig[i][j][0] /= s4
-          orig[i][j][1] /= s4
+          orig[i][j][0] *= s4
+          orig[i][j][1] *= s4
       orig[i] = orig[i].clip(0, 255)
     img = Image.fromarray(orig.astype(np.uint8))
     print("save %s" % path)
